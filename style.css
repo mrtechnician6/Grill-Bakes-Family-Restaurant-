@@ -1,0 +1,117 @@
+<style>
+    :root {
+        --primary: #e67e22;
+        --primary-dark: #d35400;
+        --secondary: #2c3e50;
+        --success: #27ae60;
+        --bg-glass: rgba(255, 255, 255, 0.9);
+        --shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    body { font-family: 'Poppins', sans-serif; background: #fdfdfd; scroll-behavior: smooth; }
+
+    /* Modern Glass Header */
+    header { 
+        background: rgba(255, 255, 255, 0.8); 
+        backdrop-filter: blur(10px);
+        padding: 12px 5%;
+        border-bottom: 1px solid rgba(0,0,0,0.05);
+    }
+
+    /* Animated Hero Section */
+    .hero { 
+        background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), 
+                    url('https://images.unsplash.com/photo-1555396273-367ea4eb4db5?auto=format&fit=crop&w=1350&q=80');
+        height: 50vh;
+        animation: fadeIn 1.5s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from { opacity: 0; filter: blur(5px); }
+        to { opacity: 1; filter: blur(0); }
+    }
+
+    /* Today's Special Section */
+    .special-title {
+        position: relative;
+        padding-bottom: 10px;
+    }
+    .special-title::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 60px;
+        height: 4px;
+        background: var(--primary);
+        border-radius: 2px;
+    }
+
+    /* Impressive Food Cards */
+    .card {
+        border: none;
+        background: var(--white);
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border-radius: 20px;
+        position: relative;
+    }
+
+    .card:hover {
+        transform: translateY(-12px) scale(1.02);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+    }
+
+    .card img {
+        border-radius: 20px 20px 0 0;
+        transition: 0.5s;
+    }
+
+    .card:hover img {
+        transform: scale(1.1);
+    }
+
+    /* Modern Order Button */
+    .order-btn {
+        background: linear-gradient(45deg, var(--success), #2ecc71);
+        border-radius: 30px;
+        transition: 0.3s;
+        box-shadow: 0 4px 15px rgba(39, 174, 96, 0.3);
+    }
+
+    .order-btn:hover {
+        box-shadow: 0 6px 20px rgba(39, 174, 96, 0.5);
+        filter: brightness(1.1);
+    }
+
+    /* Modal Styling */
+    .modal-content {
+        border-radius: 25px;
+        border: none;
+        animation: slideUp 0.4s ease-out;
+    }
+
+    @keyframes slideUp {
+        from { transform: translateY(50px); opacity: 0; }
+        to { transform: translateY(0); opacity: 1; }
+    }
+
+    /* Floating WhatsApp Button for support */
+    .whatsapp-float {
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: #25d366;
+        width: 60px;
+        height: 60px;
+        border-radius: 50px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+        z-index: 5000;
+        color: white;
+        text-decoration: none;
+        font-size: 30px;
+    }
+</style>
