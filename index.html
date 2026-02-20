@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grill & Bakes Family Restaurant</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <style>
+        :root { --primary: #e67e22; --secondary: #2c3e50; --success: #27ae60; --light: #f4f4f4; }
+        body { font-family: 'Poppins', sans-serif; margin: 0; background: var(--light); color: #333; }
+        
+        /* Header & Navigation */
+        header { background: white; padding: 15px 5%; display: flex; justify-content: space-between; align-items: center; position: sticky; top: 0; z-index: 1000; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .logo { font-size: 1.5rem; font-weight: bold; color: var(--primary); }
+        .menu-toggle { background: var(--primary); color: white; border: none; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; }
+
+        /* Floating Order Button */
+        .floating-order { position: fixed; bottom: 20px; right: 20px; background: var(--success); color: white; padding: 15px 25px; border-radius: 50px; font-weight: bold; box-shadow: 0 5px 15px rgba(0,0,0,0.2); z-index: 2000; cursor: pointer; border: none; font-size: 1rem; }
+
+        /* Hero & Sections */
+        .hero { background: linear-gradient(rgba(0,0,0,0.6), rgba(0,0,0,0.6)), url('https://images.unsplash.com/photo-1514326640560-7d063ef2aed5?auto=format&fit=crop&w=1350&q=80'); height: 35vh; background-size: cover; background-position: center; display: flex; align-items: center; justify-content: center; color: white; text-align: center; flex-direction: column; }
+        .special-title { text-align: center; margin: 30px 0; color: var(--primary); font-size: 1.8rem; font-weight: bold; }
+
+        /* Full Menu Overlay - FIXED */
+        .overlay { height: 100%; width: 0; position: fixed; z-index: 3000; top: 0; right: 0; background: rgba(44, 62, 80, 0.98); overflow-y: auto; transition: 0.5s; }
+        .overlay-content { padding: 40px; color: white; display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 30px; }
+        .closebtn { position: absolute; top: 20px; right: 45px; font-size: 50px; color: white; cursor: pointer; text-decoration: none; }
+        .menu-cat h3 { color: var(--primary); border-bottom: 1px solid #555; }
+        .menu-cat ul { list-style: none; padding: 0; }
+
+        /* Card Grid */
+        .container { max-width: 1200px; margin: auto; padding: 20px; }
+        .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 25px; }
+        .card { background: white; border-radius: 12px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.1); text-align: center; }
+        .card img { width: 100%; height: 200px; object-fit: cover; }
+        .card-body { padding: 20px; }
+        .order-btn { background: var(--success); color: white; padding: 12px; border-radius: 5px; width: 100%; border: none; cursor: pointer; font-weight: bold; }
+
+        /* Order Form Modal */
+        .modal { display: none; position: fixed; z-index: 4000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); }
+        .modal-content { background: white; margin: 5% auto; padding: 25px; border-radius: 15px; width: 90%; max-width: 450px; position: relative; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; font-weight: bold; margin-bottom: 5px; }
+        .form-group input, .form-group select { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; box-sizing: border-box; }
+
+        /* Suggestion Box for Order Name */
+        #suggestions { border: 1px solid #ccc; max-height: 150px; overflow-y: auto; display: none; background: white; border-radius: 0 0 8px 8px; }
+        .suggestion-item { padding: 10px; cursor: pointer; }
+        .suggestion-item:hover { background: #eee; }
+
+        .type-option { background: #f9f9f9; padding: 10px; margin-top: 10px; border-radius: 8px; border: 2px solid #eee; cursor: pointer; text-align: center; }
+        .type-option:hover { border-color: var(--primary); }
+
+        footer { background: var(--secondary); color: white; padding: 40px 20px; text-align: center; margin-top: 40px; }
+        .location-link { background: var(--primary); color: white; padding: 10px 20px; text-decoration: none; border-radius: 5px; display: inline-block; margin-top: 10px; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="logo">Grill & Bakes</div>
+    <button class="menu-toggle" onclick="openNav()">☰ View Menu</button>
+</header>
+
+<button class="floating-order" onclick="openModal('')">🛒 Order Anything</button>
+
+<div class="hero">
+    <h1>Welcome to Grill & Bakes Family Restaurant</h1>
+    <p>Premium Grills & Fresh Bakery Items</p>
+</div>
+
+<div id="myNav" class="overlay">
+    <a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
+    <div class="overlay-content" id="fullMenuContent">
+        </div>
+</div>
+
+<div id="orderModal" class="modal">
+    <div class="modal-content">
+        <h3>Place Your Order</h3>
+        <div class="form-group">
+            <label>Your Name:</label>
+            <input type="text" id="custName" placeholder="Enter name">
+        </div>
+        <div class="form-group">
+            <label>Item Name (Start typing to see menu):</label>
+            <input type="text" id="orderName" onkeyup="showSuggestions(this.value)" placeholder="e.g. Pizza, Burger...">
+            <div id="suggestions"></div>
+        </div>
+        <div class="form-group">
+            <label>Contact Number:</label>
+            <input type="tel" id="custPhone" placeholder="Enter phone number">
+        </div>
+        <div class="form-group">
+            <label>Table No (If Dine-in):</label>
+            <input type="text" id="tableNum" placeholder="Table No">
+        </div>
+
+        <div class="type-option" onclick="sendOrder('Dine-In')">
+            <strong>Dine-In</strong><br><small>रेस्टुरेन्टमै बसेर खाना खाने</small>
+        </div>
+        <div class="type-option" onclick="sendOrder('Takeaway')">
+            <strong>Takeaway Packing</strong><br><small>प्याक गरेर लैजाने</small>
+        </div>
+        <div class="type-option" onclick="sendOrder('Delivery')">
+            <strong>Home Delivery</strong><br><small>घरमै डेलिभरी मगाउने</small>
+        </div>
+        <button onclick="closeModal()" style="width:100%; background:none; border:none; color:red; margin-top:10px; cursor:pointer;">Cancel</button>
+    </div>
+</div>
+
+<div class="container">
+    <div class="special-title">Today's Special</div>
+    <div class="grid">
+        <div class="card">
+            <img src="Blog-image-Burger-vs-Sandwich.png" alt="Burger">
+            <div class="card-body"><h3>Burger & Sandwich</h3><button class="order-btn" onclick="openModal('Burger & Sandwich')">Order Now</button></div>
+        </div>
+        <div class="card">
+            <img src="tomato-mozzarella-pizza-FT-RECIPE0725-e7244e979c504188a049623668c15b2e.jpg" alt="Pizza">
+            <div class="card-body"><h3>Special Pizza</h3><button class="order-btn" onclick="openModal('Special Pizza')">Order Now</button></div>
+        </div>
+        <div class="card">
+            <img src="item-684bf09d25dfd.jpg" alt="Sekuwa">
+            <div class="card-body"><h3>Mutton Sekuwa</h3><button class="order-btn" onclick="openModal('Mutton Sekuwa')">Order Now</button></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    <p>📍 Kapan Marga, Kathmandu, Nepal</p>
+    <a href="https://maps.app.goo.gl/8Xzy_fAZ6zkRaF4Vd5BRHC4" target="_blank" class="location-link">📍 View Location on Maps</a>
+    <p style="margin-top:20px;">📞 9804650880 | 📧 nkdigitalservices666@gmail.com</p>
+    <p style="opacity: 0.5; font-size: 0.8rem;">DEVELOPED BY NK DIGITAL SERVICES</p>
+</footer>
+
+<script>
+    const menuItems = [
+        "Vanilla Cake", "Black Forest", "Red Velvet", "Donuts", "Muffins", "Apple Pie", "Pastry", "Cookies",
+        "Chicken Chilly", "Roast Chicken", "Chicken Lollipop", "Chicken Drumstick", "Chicken Tikka", "Chicken Curry", "Lemon Chicken", "Garlic Chicken",
+        "Family Combo", "Mix Grill Platter", "Veg Thali", "Chicken Thali", "Mutton Set", "Butter Naan", "Paneer Masala", "Jeera Rice",
+        "Cold Coffee", "Fresh Lime", "Milkshake", "Lassi", "Cappuccino", "Coke/Fanta", "Burger & Sandwich", "Club Sandwich", "Carbonara", "Mutton Sekuwa", "Special Pizza", "Zorba Pizza", "Spaghetti Carbonara"
+    ];
+
+    function openNav() { 
+        document.getElementById("myNav").style.width = "100%"; 
+        renderMenu();
+    }
+    function closeNav() { document.getElementById("myNav").style.width = "0%"; }
+
+    function openModal(item) {
+        document.getElementById('orderName').value = item;
+        document.getElementById('orderModal').style.display = 'block';
+    }
+    function closeModal() { document.getElementById('orderModal').style.display = 'none'; }
+
+    function showSuggestions(val) {
+        let res = document.getElementById("suggestions");
+        res.innerHTML = '';
+        if (val.length === 0) { res.style.display = "none"; return; }
+        let list = menuItems.filter(i => i.toLowerCase().includes(val.toLowerCase()));
+        if (list.length > 0) {
+            list.forEach(i => {
+                let div = document.createElement("div");
+                div.innerHTML = i;
+                div.className = "suggestion-item";
+                div.onclick = () => { document.getElementById('orderName').value = i; res.style.display = "none"; };
+                res.appendChild(div);
+            });
+            res.style.display = "block";
+        }
+    }
+
+    function sendOrder(type) {
+        const name = document.getElementById('custName').value;
+        const item = document.getElementById('orderName').value;
+        const phone = document.getElementById('custPhone').value;
+        const table = document.getElementById('tableNum').value;
+        
+        if(!name || !item || !phone) { alert("Please fill Name, Item and Phone!"); return; }
+
+        let nep = type === 'Dine-In' ? "रेस्टुरेन्टमै बसेर खाना खाने" : (type === 'Takeaway' ? "प्याक गरेर लैजाने" : "घरमै डेलिभरी मगाउने");
+        const waLink = `https://wa.me/9779804650880?text=*NEW ORDER*%0A👤 Name: ${name}%0A🍔 Item: ${item}%0A📞 Phone: ${phone}%0A🪑 Table: ${table || 'N/A'}%0A🍱 Type: ${type} (${nep})`;
+        window.open(waLink, '_blank');
+        closeModal();
+    }
+
+    function renderMenu() {
+        const categories = {
+            "Bake Items": ["Vanilla Cake", "Black Forest", "Red Velvet", "Donuts", "Muffins"],
+            "Chicken Items": ["Chicken Chilly", "Roast Chicken", "Chicken Lollipop", "Garlic Chicken"],
+            "Family Food": ["Family Combo", "Veg Thali", "Chicken Thali", "Mutton Set"],
+            "Drinks": ["Cold Coffee", "Fresh Lime", "Milkshake", "Lassi", "Coke/Fanta"]
+        };
+        let html = '';
+        for (let cat in categories) {
+            html += `<div class="menu-cat"><h3>${cat}</h3><ul>`;
+            categories[cat].forEach(i => html += `<li>${i}</li>`);
+            html += `</ul></div>`;
+        }
+        document.getElementById("fullMenuContent").innerHTML = html;
+    }
+</script>
+</body>
+</html>
